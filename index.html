@@ -1,8 +1,103 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Hidden Geometry Student Study</title><link rel="stylesheet" href="style.css"></head><body><main>
-<header><h1>Hidden Geometry Student Study</h1><p id="studyMeta"></p></header>
-<section id="invalid" class="card" hidden><h2>Assigned link required</h2><p>Please use the exact link supplied by the instructor.</p></section>
-<section id="consent" class="card" hidden><h2>Start</h2><p><b>Study ID:</b> <span id="showId"></span><br><b>Assigned condition:</b> <span id="showGroup"></span></p><p>Complete each screen independently. Earlier answers cannot be edited after submission.</p><label><input type="checkbox" id="ready"> I am ready to begin.</label><br><button id="startBtn">Begin study</button></section>
-<section id="study" class="card" hidden><div class="toprow"><b id="heading"></b><span id="progress"></span></div><p id="instruction"></p><canvas id="plot" width="1000" height="470"></canvas>
-<div class="form"><label>Estimated number of boundary transitions<input id="ntrans"></label><label>Approximate journey positions / marks<input id="locs"></label><label>Estimated number of straight boundary segments<input id="nseg"></label><label>Confidence<select id="conf"><option value="">Select</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label><label>Evidence supporting your answer<textarea id="evid"></textarea></label><div id="stageExtra"></div></div><div id="status"></div><button id="nextBtn">Save response & continue</button></section>
-<section id="done" class="card" hidden><h2>Completed</h2><p id="serverStatus"></p><button id="csvBtn">Download personal response backup (CSV)</button></section>
-</main><script src="config.js"></script><script src="tasks.js"></script><script src="app.js"></script></body></html>
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hidden Geometry Student Study</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+<header>
+  <h1>Hidden Geometry Student Study</h1>
+  <p id="studyMeta"></p>
+</header>
+
+<section id="invalid" class="card" hidden>
+  <h2>Assigned link required</h2>
+  <p>Please use the exact link supplied by the instructor.</p>
+</section>
+
+<section id="consent" class="card" hidden>
+  <h2>Start</h2>
+  <p><b>Study ID:</b> <span id="showId"></span><br>
+     <b>Assigned condition:</b> <span id="showGroup"></span></p>
+  <p>Use only the information shown in each task. Complete each screen independently. Earlier answers cannot be edited after submission.</p>
+  <label class="check"><input type="checkbox" id="ready"> I am ready to begin.</label>
+  <button id="startBtn">Begin study</button>
+</section>
+
+<section id="study" class="card" hidden>
+  <div class="toprow">
+    <div><b id="heading"></b></div>
+    <div id="progress"></div>
+  </div>
+
+  <p id="instruction"></p>
+
+  <div class="markHelp">
+    <b>Mark transition locations directly on the figure/graph.</b>
+    <span id="markInstruction"></span>
+  </div>
+
+  <canvas id="plot" width="1000" height="470" aria-label="Task stimulus"></canvas>
+
+  <div class="markbar">
+    <div><b>Selected transition marks:</b> <span id="markCount">0</span></div>
+    <div class="markactions">
+      <button type="button" class="secondary" id="undoBtn">Undo last mark</button>
+      <button type="button" class="secondary" id="clearBtn">Clear marks</button>
+    </div>
+  </div>
+
+  <div class="selectedList">
+    <b>Recorded journey positions:</b> <span id="selectedS">None</span>
+  </div>
+
+  <div class="form">
+    <label>Estimated number of straight boundary segments
+      <input id="nseg" type="number" min="0" max="30" step="1" inputmode="numeric" autocomplete="off">
+    </label>
+
+    <fieldset>
+      <legend>Confidence</legend>
+      <div class="radioRow" id="confidenceBox">
+        <label><input type="radio" name="confidence" value="1">1</label>
+        <label><input type="radio" name="confidence" value="2">2</label>
+        <label><input type="radio" name="confidence" value="3">3</label>
+        <label><input type="radio" name="confidence" value="4">4</label>
+        <label><input type="radio" name="confidence" value="5">5</label>
+      </div>
+      <div class="hint">1 = almost guessing, 5 = very confident from the available information.</div>
+    </fieldset>
+
+    <fieldset>
+      <legend>What mainly influenced your answer?</legend>
+      <div id="evidenceOptions" class="radioList"></div>
+    </fieldset>
+
+    <label class="insufficient">
+      <input type="checkbox" id="insufficient">
+      Available information is insufficient for me to identify transition locations reliably.
+    </label>
+
+    <div id="stageExtra"></div>
+  </div>
+
+  <div class="status" id="status"></div>
+  <button id="nextBtn">Save response &amp; continue</button>
+</section>
+
+<section id="done" class="card" hidden>
+  <h2>Completed</h2>
+  <p>Your study responses have been finalized.</p>
+  <p id="serverStatus"></p>
+  <button id="csvBtn">Download personal response backup (CSV)</button>
+</section>
+</main>
+
+<script src="config.js"></script>
+<script src="tasks.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
