@@ -1,0 +1,1 @@
+window.STUDY_CONFIG={studyName:"Hidden Geometry Study",submitEndpoint:"",requireAssignedLink:true,totalTasks:6};
