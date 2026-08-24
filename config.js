@@ -1,6 +1,6 @@
 window.STUDY_CONFIG={
   studyName:"Hidden Geometry Study",
-  submitEndpoint:"https://script.google.com/macros/s/AKfycbyMsUeoX2a88AI3Zin6Yh7Jqz86AJ6SlZORkUKmySUcvZRv8RrNj7IznupVsmcsJKn0rA/exec",
+  submitEndpoint:"https://script.google.com/macros/s/AKfycbw8hF0y4bsG7WXkprX7Tm05rCWoOkAQpkZghCndCw_EX9up3avQ5UC2LB99WuLcNjZdYQ/exec",
   requireAssignedLink:true,
   totalTasks:6,
   maxMarksPerChannel:12
