@@ -331,9 +331,21 @@ function reset(){
 
 function validate(){
   const ins=$("insufficient").checked;
-  if(!$("nseg").value.trim()||!checked("confidence")||!checked("evidence")){
-    $("status").className="status warn";$("status").textContent="Please complete segment count, confidence, and evidence choice.";return false;
+  const segRaw=$("nseg").value.trim();
+  const segNum=Number(segRaw);
+
+  if(!segRaw||!checked("confidence")||!checked("evidence")){
+    $("status").className="status warn";
+    $("status").textContent="Please complete segment count, confidence, and evidence choice.";
+    return false;
   }
+
+  if(!ins&&(!Number.isInteger(segNum)||segNum<1)){
+    $("status").className="status warn";
+    $("status").textContent="Please enter a positive whole number of straight boundary segments (1 or more). If the displayed information is not sufficient to make this judgment, select Insufficient evidence.";
+    return false;
+  }
+
   if(group==="A"&&!ins&&marksA.length===0){
     $("status").className="status warn";$("status").textContent="Please mark at least one distinct transition, or select insufficient evidence.";return false;
   }
