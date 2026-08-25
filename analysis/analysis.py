@@ -1,0 +1,30 @@
+import argparse,math,pandas as pd,numpy as np
+TRUE_TRANSITIONS={1:[],2:[],3:[],4:[],5:[],6:[]}
+TEST_IDS={"TEST001","TEST002","TEST003"}
+def ps(x):
+ if pd.isna(x) or str(x).strip()=="":return []
+ return [float(v) for v in str(x).split(",") if v.strip()]
+def dc(a,b):
+ d=abs(a-b);return min(d,1-d)
+def match(P,T,tol):
+ C=sorted((dc(p,t),i,j) for i,p in enumerate(P) for j,t in enumerate(T));up=set();ut=set();R=[]
+ for d,i,j in C:
+  if d>tol:break
+  if i not in up and j not in ut:up.add(i);ut.add(j);R.append(d)
+ return R
+def metrics(r,tol):
+ T=TRUE_TRANSITIONS[int(r.task)];P=ps(r.inferred_transition_s)
+ if not T:return pd.Series({"TP":np.nan,"FP":np.nan,"FN":np.nan,"precision":np.nan,"recall":np.nan,"f1":np.nan,"loc_error":np.nan,"exact_T":np.nan,"segment_correct":np.nan,"D_TS":abs(float(r.inferred_transition_count)-float(r.predicted_segments))})
+ M=match(P,T,tol);tp=len(M);fp=len(P)-tp;fn=len(T)-tp;p=tp/len(P) if P else 0;rcl=tp/len(T);f=2*p*rcl/(p+rcl) if p+rcl else 0
+ return pd.Series({"TP":tp,"FP":fp,"FN":fn,"precision":p,"recall":rcl,"f1":f,"loc_error":np.mean(M) if M else np.nan,"exact_T":int(len(P)==len(T)),"segment_correct":int(float(r.predicted_segments)==len(T)),"D_TS":abs(float(r.inferred_transition_count)-float(r.predicted_segments))})
+def main():
+ a=argparse.ArgumentParser();a.add_argument("csv");a.add_argument("--tol",type=float,required=True);a.add_argument("--include-tests",action="store_true");x=a.parse_args()
+ if any(not v for v in TRUE_TRANSITIONS.values()):raise SystemExit("Fill TRUE_TRANSITIONS for all six deployed tasks before analysis.")
+ d=pd.read_csv(x.csv)
+ if not x.include_tests:d=d[~d.study_id.astype(str).isin(TEST_IDS)].copy()
+ m=d.apply(lambda r:metrics(r,x.tol),axis=1);o=pd.concat([d.reset_index(drop=True),m.reset_index(drop=True)],axis=1);o.to_csv("response_level_metrics.csv",index=False)
+ s=o.groupby(["group","stage"]).agg(n=("study_id","nunique"),precision=("precision","mean"),recall=("recall","mean"),f1=("f1","mean"),localization_error=("loc_error","mean"),exact_transition_rate=("exact_T","mean"),segment_accuracy=("segment_correct","mean"),mean_D_TS=("D_TS","mean"),confidence=("confidence","mean"),duration_ms=("stage_duration_ms","mean")).reset_index();s.to_csv("condition_summary.csv",index=False)
+ c=o[o.group.astype(str).str.upper()=="C"]
+ if len(c):c.pivot_table(index=["study_id","task"],columns="stage",values=["f1","loc_error","exact_T","segment_correct","D_TS","confidence"],aggfunc="first").to_csv("C_progression.csv")
+ print("Analysis outputs created.")
+if __name__=="__main__":main()
